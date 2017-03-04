@@ -136,10 +136,11 @@ Status: 200 OK
 
 ## Improvements
 
- - Refactor Json classes for object manipulation.
+ - Refactor Json classes for object manipulation, saveLeft and saveRight aren't very nice.
  - Use a different approach to map Json on request body.
- - Improve Rest errors codes and verbs usage.
- - Using a different approach to test JMS messaging
+ - Improve Rest errors codes and verbs in use.
+ - Need add few Exceptions (none in use)
+ - I would like to use a messasing mechanism (for testing and learning)
 
 ## Development
 
