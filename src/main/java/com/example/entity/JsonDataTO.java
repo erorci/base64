@@ -5,7 +5,7 @@ package com.example.entity;
  * @author emersonr
  *
  */
-public class JsonData {
+public class JsonDataTO {
 	
 	private String data;
 

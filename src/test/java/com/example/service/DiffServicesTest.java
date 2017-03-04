@@ -5,7 +5,9 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.entity.JsonBase;
+import com.example.enums.JsonSide;
 import com.example.repository.JsonBaseRepository;
 
 /**
@@ -36,6 +39,7 @@ public class DiffServicesTest {
 	@Mock
 	public JsonBaseRepository repository;
 	
+	
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -46,10 +50,10 @@ public class DiffServicesTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void saveLeftNotFound() throws Exception {
+	public void saveNotFound() throws Exception {
 		Mockito.doReturn(null).when(repository).findById(Mockito.eq(1L));
 		Mockito.doAnswer(returnsFirstArg()).when(repository).save(Mockito.any(JsonBase.class));
-		JsonBase left = service.saveLeft(1L, "Left");
+		JsonBase left = service.save(1L, "Left", JsonSide.LEFT);
 		Assert.assertThat(left.getId(), Matchers.is(1L));
 		Assert.assertThat(left.getLeft(), Matchers.is("Left"));
 		Assert.assertThat(left.getRight(), Matchers.isEmptyOrNullString());
@@ -64,7 +68,7 @@ public class DiffServicesTest {
 		JsonBase json = new JsonBase(1L, null, "Right");
 		Mockito.doReturn(json).when(repository).findById(Mockito.eq(1L));
 		Mockito.doAnswer(returnsFirstArg()).when(repository).save(Mockito.any(JsonBase.class));
-		JsonBase left = service.saveLeft(1L, "Left");
+		JsonBase left = service.save(1L, "Left", JsonSide.LEFT);
 		Assert.assertThat(left.getId(), Matchers.is(1L));
 		Assert.assertThat(left.getLeft(), Matchers.is("Left"));
 		Assert.assertThat(left.getRight(), Matchers.is("Right"));
@@ -78,7 +82,7 @@ public class DiffServicesTest {
 	public void saveRightNotFound() throws Exception {
 		Mockito.doReturn(null).when(repository).findById(Mockito.eq(1L));
 		Mockito.doAnswer(returnsFirstArg()).when(repository).save(Mockito.any(JsonBase.class));
-		JsonBase left = service.saveRight(1L, "Right");
+		JsonBase left = service.save(1L, "Right", JsonSide.RIGHT);
 		Assert.assertThat(left.getId(), Matchers.is(1L));
 		Assert.assertThat(left.getRight(), Matchers.is("Right"));
 		Assert.assertThat(left.getLeft(), Matchers.isEmptyOrNullString());
@@ -93,7 +97,7 @@ public class DiffServicesTest {
 		JsonBase json = new JsonBase(1L, "Left", null);
 		Mockito.doReturn(json).when(repository).findById(Mockito.eq(1L));
 		Mockito.doAnswer(returnsFirstArg()).when(repository).save(Mockito.any(JsonBase.class));
-		JsonBase left = service.saveRight(1L, "Right");
+		JsonBase left = service.save(1L, "Right", JsonSide.RIGHT);
 		Assert.assertThat(left.getId(), Matchers.is(1L));
 		Assert.assertThat(left.getLeft(), Matchers.is("Left"));
 		Assert.assertThat(left.getRight(), Matchers.is("Right"));
@@ -128,7 +132,7 @@ public class DiffServicesTest {
 	 */	
 	@Test
 	public void validateDiffJsonLeftMissing() throws Exception {
-		JsonBase json = new JsonBase(1L, " ", "Right");
+		JsonBase json = new JsonBase(1L, null, "Right");
 		Mockito.doReturn(json).when(repository).findById(Mockito.eq(1L));
 		String result = service.validateJson(1L);
 		Assert.assertThat(result, Matchers.is("Json missing"));

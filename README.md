@@ -115,9 +115,9 @@ There are three main endpoints you can call. Instructions on how to use them in 
 
 | Title | URL | Method | Params | Data Params
 | ------ | ------ | ------ | ------ | ------ |
-| Left Json save | host:port/v1/diff/ID/left | POST |Required: id=[integer] | { "data": "[string]"} |
-| Right Json save |host:port/v1/diff/ID/right | POST | Required: id=[integer] |{ "data": "[string]"} |
-| Diff Result |host:port/v1/diff/ID | GET | Required: id=[integer] | 
+| Left Json save | **host**:**port**/v1/diff/**ID**/left | POST |Required: id=[integer] | { "data": "[string]"} |
+| Right Json save |**host**:**port**/v1/diff/**ID**/right | POST | Required: id=[integer] |{ "data": "[string]"} |
+| Diff Result |**host**:**port**/v1/diff/**ID** | GET | Required: id=[integer] | 
 
 Example:
 ```sh
@@ -136,11 +136,12 @@ Status: 200 OK
 
 ## Improvements
 
- - Refactor Json classes for object manipulation, saveLeft and saveRight aren't very nice.
+
+ - JsonBase class needs code refactoring thus improving object manipulation.
  - Use a different approach to map Json on request body.
- - Improve Rest errors codes and verbs in use.
- - Need add few Exceptions (none in use)
- - I would like to use a messasing mechanism (for testing and learning)
+ - Improve Rest errors codes and verbs usage.
+ - Improve exception
+ - Using a different approach to test JMS messaging
 
 ## Development
 

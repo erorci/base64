@@ -2,17 +2,27 @@ package com.example.service;
 
 import java.util.Arrays;
 
+import javax.sound.midi.InvalidMidiDataException;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.interceptor.CacheOperationInvoker.ThrowableWrapper;
 import org.springframework.stereotype.Service;
 
+import com.example.controller.HomeController;
 import com.example.entity.JsonBase;
+import com.example.entity.JsonDataTO;
+import com.example.enums.JsonSide;
 import com.example.repository.JsonBaseRepository;
 
+import ch.qos.logback.classic.spi.ThrowableProxyVO;
 
 /**
- * Service is used for persisting objects in the repository,
- * validate if a object is equal, has different size or mapped offsets.
+ * Service is used for persisting objects in the repository, validate if a
+ * object is equal, has different size or mapped offsets.
+ * 
  * @author emersonr
  *
  */
@@ -23,76 +33,90 @@ public class DiffServices {
 	@Autowired
 	public JsonBaseRepository repository;
 
+	private static final Logger logger = LoggerFactory.getLogger(DiffServices.class);
+	
 	/**
-	 * Checking if data is persisted
-	 * @param id is used for the repository to identify an object
-	 * @param value is the json based64 to be persisted.
-	 * @return a JsonBase object
+	 * Persist the object in the repository
+	 * @param id used for object identification
+	 * @param json is the based64 data to be inserted
+	 * @param side is origin, which endpoint was used
+	 * @return a new JsonBase object
+	 * @throws Exception
 	 */
-	public JsonBase saveLeft(Long id, String value) {
+	public JsonBase save(Long id, String json, JsonSide side) throws Exception {
+
+		validate(id, json);
+
 		JsonBase jsonBase = repository.findById(id);
 		if (jsonBase == null) {
 			jsonBase = new JsonBase();
 			jsonBase.setId(id);
 		}
-		jsonBase.setLeft(value);
-		return repository.save(jsonBase);		
+
+		if (JsonSide.LEFT.equals(side)) {
+			jsonBase.setLeft(json);
+		} else {
+			jsonBase.setRight(json);
+		}
+
+		return repository.save(jsonBase);
 
 	}
-	
+
 	/**
-	 * Checking if data is persisted
-	 * @param id is used by repository to identify an object
-	 * @param value is the json based64 to be persisted.
-	 * @return a JsonBase object
+	 * Guarantee if data in use is valid avoiding further errors.
+	 * @param id to test a valid identification
+	 * @param json to test a valid json string
+	 * @throws Exception with customized message to help user understanding
 	 */
-	public JsonBase saveRight(Long id, String value) {
-		JsonBase jsonBase = repository.findById(id);
-		if (jsonBase == null) {
-			jsonBase = new JsonBase();
-			jsonBase.setId(id);
+	private void validate(Long id, String json) throws Exception {
+		
+		logger.info("validate: " + id.toString());
+		
+		if (!StringUtils.isNotBlank(json)) {
+			throw new Exception("Json is blank or null");
 		}
-		jsonBase.setRight(value);
-		return repository.save(jsonBase);
+
 	}
-	
-	
+
 	/**
 	 * Do the core validation in order to compare Jsons and return its results
-	 * @param id is used by repository to find a object
+	 * 
+	 * @param id
+	 *            is used by repository to find a object
 	 * @return a string with comparison results
 	 */
 	public String validateJson(Long id) {
 		JsonBase jsonBase = repository.findById(id);
-		
+
 		if (jsonBase == null) {
 			return "No data found";
 		}
-		
-		if ( !StringUtils.isNotBlank(jsonBase.getLeft()) || !StringUtils.isNotBlank(jsonBase.getRight())) {
+
+		if (!StringUtils.isNotBlank(jsonBase.getLeft()) || !StringUtils.isNotBlank(jsonBase.getRight())) {
 			return "Json missing";
 		}
 		byte[] bytesLeft = jsonBase.getLeft().getBytes();
 		byte[] bytesRight = jsonBase.getRight().getBytes();
 
 		boolean blnResult = Arrays.equals(bytesLeft, bytesRight);
-		
+
 		String offsets = "";
-		
-		if(blnResult) {
+
+		if (blnResult) {
 			return "Jsons are equal";
 		} else if (bytesLeft.length != bytesRight.length) {
 			return "Jsons are not same size.";
-			
-		} else { 
-		
+
+		} else {
+
 			byte different = 0;
 
 			for (int index = 0; index < bytesLeft.length; index++) {
 				different = (byte) (bytesLeft[index] ^ bytesRight[index]);
 
 				if (different != 0) {
-					offsets = offsets + " " + index; 
+					offsets = offsets + " " + index;
 				}
 
 			}
