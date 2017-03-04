@@ -115,9 +115,9 @@ There are three main endpoints you can call. Instructions on how to use them in 
 
 | Title | URL | Method | Params | Data Params
 | ------ | ------ | ------ | ------ | ------ |
-| Left Json save | <host>:<port>/v1/diff/<ID>/left | POST |Required: id=[integer] | { "data": "[string]"} |
-| Right Json save | <host>:<port>/v1/diff/<ID>/right | POST | Required: id=[integer] |{ "data": "[string]"}
-| Diff Result | <host>:<port>/v1/diff/<ID> | GET | Required: id=[integer] | 
+| Left Json save | host:port/v1/diff/ID/left | POST |Required: id=[integer] | { "data": "[string]"} |
+| Right Json save |host:port/v1/diff/ID/right | POST | Required: id=[integer] |{ "data": "[string]"} |
+| Diff Result |host:port/v1/diff/ID | GET | Required: id=[integer] | 
 
 Example:
 ```sh
