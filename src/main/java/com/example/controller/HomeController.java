@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.entity.JsonData;
+import com.example.entity.JsonDataTO;
+import com.example.enums.JsonSide;
 import com.example.service.DiffServices;
 
 
@@ -27,29 +28,32 @@ public class HomeController {
 	@Autowired
 	private DiffServices service;
 
+	
 	/**
 	 * This endpoint is used to post a value for comparison
 	 * @param id
-	 * @param jsonData is a base64 encoded value used during validations
-	 * @return OK message when data was persisted susscefully
+	 * @param json is a base64 encoded value used during validations
+	 * @return OK message when data was persisted successfully
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/left", method = RequestMethod.POST, produces = "application/json")
-	private String setLeft(@PathVariable Long id, @RequestBody JsonData jsonData) {
-		service.saveLeft(id, jsonData.getData());
-		logger.info("setLeft " + jsonData.getData());
+	private String setLeft(@PathVariable Long id, @RequestBody JsonDataTO json) throws Exception {
+		service.save(id, json.getData(), JsonSide.LEFT );
+		logger.info("setLeft " + json.getData());
 		return "{\"message\":" + "\"" + "OK" + "\"}";
 	}
 
 	/**
 	 * This endpoint is used to post a value for comparison
 	 * @param id
-	 * @param jsonData is a base64 encoded value used during validations
-	 * @return OK message when data was persisted susscefully
+	 * @param json is a base64 encoded value used during validations
+	 * @return OK message when data was persisted successfully
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/right", method = RequestMethod.POST, produces = "application/json")
-	private String setRight(@PathVariable Long id, @RequestBody JsonData jsonData) {
-		service.saveRight(id, jsonData.getData());
-		logger.info("setRight " + jsonData.getData());
+	private String setRight(@PathVariable Long id, @RequestBody JsonDataTO json) throws Exception {
+		service.save(id, json.getData(), JsonSide.RIGHT );
+		logger.info("setRight " + json.getData());
 		return "{\"message\":" + "\"" + "OK" + "\"}";
 	}
 

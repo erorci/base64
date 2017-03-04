@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.entity.JsonBase;
+import com.example.entity.JsonDataTO;
+import com.example.enums.JsonSide;
 import com.example.repository.JsonBaseRepository;
 import com.example.service.DiffServices;
 
@@ -79,7 +81,7 @@ public class HomeControllerTest {
 	 */
 	@Test
 	public void left() throws Exception {
-		Mockito.doReturn(null).when(service).saveLeft(Mockito.eq(1L), Mockito.contains("DBVsbG8gd29ybGJK="));
+		Mockito.doReturn(null).when(service).save(Mockito.eq(1L), Mockito.contains("DBVsbG8gd29ybGJK="), Mockito.eq(JsonSide.LEFT));
 		mvc.perform(MockMvcRequestBuilders.post("/v1/diff/1/left").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"data\": " + "  \"DBVsbG8gd29ybGJK=\"" + "}"))
@@ -93,7 +95,7 @@ public class HomeControllerTest {
 	 */
 	@Test
 	public void right() throws Exception {
-		Mockito.doReturn(null).when(service).saveRight(Mockito.eq(1L), Mockito.contains("DBVsbG8gd29ybGJK="));
+		Mockito.doReturn(null).when(service).save(Mockito.eq(1L), Mockito.contains("DBVsbG8gd29ybGJK="), Mockito.eq(JsonSide.RIGHT));
 		mvc.perform(MockMvcRequestBuilders.post("/v1/diff/1/right").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"data\": " + "  \"DBVsbG8gd29ybGJK=\"" + "}")).andExpect(status().isOk());
