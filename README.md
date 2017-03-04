@@ -5,7 +5,11 @@ A Java Web based application, used for making based64 enconded Json comparison.
 ### How it works:
 
 - Providing 2 http endpoints that accepts JSON base64 encoded binary data on both endpoints;
-- Providing a endpoint for diff comparison.
+- Providing a endpoint for diff comparison:
+  - Jsons are equal
+  - Jsons are same size
+  - Jsons are different size
+  - Jsons are same size but with differeces
 
 ## Built with
 
