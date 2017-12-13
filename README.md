@@ -5,7 +5,11 @@ A Java Web based application, used for making based64 enconded Json comparison.
 ### How it works:
 
 - Providing 2 http endpoints that accepts JSON base64 encoded binary data on both endpoints;
-- Providing a endpoint for diff comparison.
+- Providing a endpoint for diff comparison:
+  - Jsons are equal
+  - Jsons are same size
+  - Jsons are different size
+  - Jsons are same size but with differeces
 
 ## Built with
 
@@ -136,7 +140,8 @@ Status: 200 OK
 
 ## Improvements
 
- - JsonBase class needs a refactor, improving object manipulation.
+
+ - JsonBase class needs code refactoring thus improving object manipulation.
  - Use a different approach to map Json on request body.
  - Improve Rest errors codes and verbs usage.
  - Improve exception
